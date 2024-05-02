@@ -1,0 +1,21 @@
+---
+title: "About Me"
+subtitle: "My Capabilities. "
+format: html
+---
+
+::: columns
+::: {.column width="70%"}
+![](images/franksinatra.jpg)
+:::
+
+::: {.column width="10%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="20%"}
+My name is Xoog Frank. My photo is from [here](https://picryl.com/media/frank-sinatra-1951-universal-pictures-publicity-photo-e5a1d3).
+:::
+:::
+
+If you would like to contact me please do so at 248-434-5508
