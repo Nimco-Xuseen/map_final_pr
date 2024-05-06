@@ -1,6 +1,6 @@
 ---
-title: "Monarch Watch"
-author: "Schwab"
+title: "Mapping-Project 3"
+author: "Xoog"
 format: html
 editor: visual
 editor_options: 
@@ -8,8 +8,8 @@ editor_options:
 ---
 
 ```{r}
-#install.packages("googlesheets4")
-library(googlesheets4)
+#| echo: false
+#| include: false
 library(tidyverse)
 library(janitor)
 library(tidygeocoder)
@@ -18,8 +18,72 @@ library(leaflet)
 ```
 
 ```{r}
-# I made the US state map for you.
+#| include: false
+#| echo: false
 
-USA_map <-  maps::map("state", plot = FALSE, fill = TRUE) |> st_as_sf(coords = c("x", "y"), crs = 4326)
+X2022_us <- read_csv("2022_us.csv")
+
+X2022_us|>
+  clean_names()-> cleaned_X2022_US
+
+selected_X2022_us<- cleaned_X2022_US|>
+  select(x2_trifd, x3_frs_id, x4_facility_name, x5_street_address, x6_city, x7_county, x8_st,  x12_latitude, x13_longitude, x17_standard_parent_co_name, x20_industry_sector, x34_chemical,  x39_clean_air_act_chemical, x42_metal_category, x40_classification, x48_5_1_fugitive_air)
 
 ```
+
+```{r}
+#| include: TRUE
+#| echo: false
+
+#all the filtering
+metal_categories <- c("Elemental metals")
+
+classification<- c("PBT")
+
+filtered_tri_data <- selected_X2022_us|>
+  filter(x42_metal_category %in% metal_categories 
+         & x40_classification %in% classification) 
+#filtered out 2 things in two different columns 
+
+filt_dataset2 <- filtered_tri_data |> 
+  filter(x20_industry_sector %in% c( "Chemicals")) 
+# filtered by chemical industry sector
+
+
+
+#creating a function that calculates/ summarizes the amount of emissions per state 
+
+summarize_emissions <- function(filt_dataset2) {
+  # Group data by state and calculate total emissions for each state
+filt_dataset2|>
+    group_by(x8_st)|>
+    summarise(total_emissions = sum(x48_5_1_fugitive_air))}
+
+state_emissions <- summarize_emissions(filt_dataset2)
+
+#joining the dataset and the state emissions
+filt_dataset3<- inner_join(filt_dataset2, state_emissions, by=c("x8_st"))
+
+#creating the icon
+
+chemical_icon <- makeIcon(
+  iconUrl = "Chemicalsign.jpg",
+  iconWidth = 9.6, iconHeight = 9.6,
+  iconAnchorX = 0, iconAnchorY = 0)
+
+
+
+leaflet() |>
+  addTiles() |>
+  addMarkers(data= filt_dataset3,
+             lat = ~ x12_latitude,
+             lng = ~ x13_longitude,
+             icon = chemical_icon, 
+             popup = ~paste("Type of Chemical:",x34_chemical, "<br>",
+                                  "Industry Sector:", x20_industry_sector, "<br>",
+                            "Total State Emmissions:", total_emissions))
+
+
+```
+
+Mapping data has been an exciting journey into the world of geospatial analysis, where abstract datasets are brought to life on maps. I've discovered how to recognize spatial connections and patterns through mapping that are otherwise hard to notice. Plotting geographic data points or making choropleth maps to show spatial distributions are two examples of how mapping may be used to effectively convey ideas and narrate engaging tales. Overlaying several informational layers, such as population density or environmental conditions, gives the study more depth and context and makes it easier to understand and make decisions.The interactive nature of maps is another great attribute that makes maps easier for people to perceive.

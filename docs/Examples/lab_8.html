@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="..//images/ice_pop.jpg" rel="icon" type="image/jpeg">
+<link href="..//images/camera.png.webp" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -100,7 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -129,17 +129,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../Examples/map_example.html" rel="" target="">
+    <a class="nav-link" href="../Examples/lab7.html" rel="" target="">
  <span class="menu-text">Map</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../Examples/lab_8.html" rel="" target="" aria-current="page">
+ <span class="menu-text">SQL</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../Examples/lab4.html" rel="" target="">
+ <span class="menu-text">Wrangling</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://www.github.com" rel="" target=""><i class="bi bi-github" role="img">
 </i> 
  <span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../Examples/lab_8.pdf" rel="" target="">
- <span class="menu-text">SQL</span></a>
   </li>  
 </ul>
             <div class="quarto-navbar-tools">
@@ -153,9 +157,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="lab_8.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -176,18 +178,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>NOTE: The Rendered document was too long, so the professor reccomended that we shorten the document and to use limit.</p>
-<p>This lab was originally created by Profs Ben Baumer and Jordan Crouser. I’ve edited it slightly.</p>
-<p><a href="https://en.wikipedia.org/wiki/SQL">SQL</a> is a longstanding database querying language. It is a loosely-implemented standard. We will be using <a href="https://en.wikipedia.org/wiki/MySQL">MySQL</a>.</p>
-<p>To facilitate our connection to the MySQL database server, we will need to install the <code>RMySQL</code> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># do NOT install RMySQL if you are on the RStudio Server</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"RMySQL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>Goal</strong>: by the end of this lab, you will be able to write basic <code>SELECT</code> queries in SQL and retrieve the results into R.</p>
-<section id="connecting-to-mysql" class="level2">
-<h2 class="anchored" data-anchor-id="connecting-to-mysql">Connecting to MySQL</h2>
-<p>The data we will be using is stored on a server in Bass Hall. It’s called <code>scidb.smith.edu</code>. We can connect through the <code>dbConnect()</code> function provided by the <code>DBI</code> package (which is loaded automatically when you load <code>RMySQL</code>). You will also need the <code>RMySQL</code> package installed.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RMySQL)</span>
@@ -200,7 +194,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">connection=</span> <span class="st">'db'</span>, <span class="at">max.print =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This chunk of code will allow you to connect to <code>scidb</code>. Note that this creates a database connection object named <code>db</code>, which has the class <code>MySQLConnection</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(db)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -209,13 +202,6 @@ attr(,"package")
 [1] "RMySQL"</code></pre>
 </div>
 </div>
-<p>Also, we set the <code>connection</code> parameter for all future chunks in this R Markdown file. Note also that the <code>max.print</code> argument sets the maximum number of results printed by each query.</p>
-<p>Each of the following chunks makes use of the SQL engine functionality in <code>knitr</code>. You may want to <a href="https://bookdown.org/yihui/rmarkdown/language-engines.html#sql">read about this</a>. Each of the following chunks is an <code>sql</code> chunk – as opposed to an <code>r</code> chunk!</p>
-<p>To retrieve the results from a query in R, use the <code>dbGetQuery()</code> function from the <code>DBI</code> package (which is automatically loaded when you load <code>RMySQL</code>). Its first argument is a database connection object, and the second argument is an SQL query as a character vector.</p>
-</section>
-<section id="retrieving-data" class="level2">
-<h2 class="anchored" data-anchor-id="retrieving-data">Retrieving data</h2>
-<p>We want to be able to see which type of databases exist on the server. We can do this with SHOW DATABASES</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn =</span> db,</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>           <span class="st">"SHOW DATABASES"</span>) <span class="sc">|&gt;</span></span>
@@ -229,17 +215,12 @@ attr(,"package")
 5 information_schema</code></pre>
 </div>
 </div>
-<p><strong>Note: If you had a problem on Friday and need to use dbGetQuery(conn=db, “SHOW DATABASES;) you will have to edit the code chunks below and above. Otherwise you can use the SQL chunks as printed. </strong></p>
-<p>You don’t actually need the ; at the end of the quiery above for MySQL, but for other SQL dialects you do so it doesn’t hurt.</p>
-<p>We want to use the imdb databse and we have to tell our db connection that.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn =</span> db,<span class="st">"USE imdb;"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>data frame with 0 columns and 0 rows</code></pre>
 </div>
 </div>
-<p>Its fine that there are 0 rows, this is just how we tell R which db we want to use.</p>
-<p>Let’s look at the tables available in imdb.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn =</span> db, <span class="st">"SHOW TABLES;"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -267,8 +248,6 @@ attr(,"package")
 21           title</code></pre>
 </div>
 </div>
-<p>See the kind_type table? That one shows what type of movie it is.</p>
-<p>This query returns the list of kinds of “movies” stored in the IMDB. We are selecting everything with * from the kind_type table.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn =</span> db, <span class="st">"SELECT * FROM kind_type;"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -282,13 +261,12 @@ attr(,"package")
 7  7        episode</code></pre>
 </div>
 </div>
-<p>Of course, you will often want to store the result of your query as a data frame. This can be achieved by setting the <code>output.var</code> argument in the chunk. Here we retrieve the list of different types of information stored in the database, save it as a data frame in R, and show the first few rows.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">## output.var="info_types" in this chunk</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>info_types<span class="ot">&lt;-</span> <span class="fu">dbGetQuery</span>(<span class="at">conn =</span> db, <span class="st">"SELECT * FROM info_type;"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We now have a <code>data.frame</code> called <code>info_types</code> in our environment.</p>
+<p>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: this is an r chunk s we use R instead of SQL.</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -303,16 +281,6 @@ attr(,"package")
 6  6    sound mix</code></pre>
 </div>
 </div>
-<p>That’s all you need to know about how to get data from MySQL into R. The rest of this lab consists of practicing writing SQL queries. It may be useful to reference the full <a href="http://dev.mysql.com/doc/refman/5.6/en/select.html">documentation for <code>SELECT</code> queries</a>.</p>
-<p>For example, let’s say I wanted to find information on the wacky Bill Murray Movie <a href="https://www.imdb.com/title/tt0107048/">Groundhog Day</a>.</p>
-<p>The titles are stored in the <code>title</code> field (i.e.&nbsp;column) in the <code>title</code> table. [Note: your professor is not responsible for naming these tables and fields!] Each row in the <code>title</code> table corresponds to a single movie, but of course, we need to restrict the rows we retrieve to only those where the <code>title</code> field equals <code>Groundhog Day</code>. The following query achieves this.</p>
-<blockquote class="blockquote">
-<p>Note: SQL does not require the <code>==</code> for testing equality, since you aren’t ever changing the data.</p>
-</blockquote>
-<blockquote class="blockquote">
-<p>Note: You have to use <code>'</code> single quotes since you are working within a <code>"</code> double-quoted string.</p>
-</blockquote>
-<p>In the chunk below we select every column from the title-table where the title-variable equals ‘Groundhog Day’</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn =</span> db, </span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>           <span class="st">"SELECT *</span></span>
@@ -355,7 +323,6 @@ attr(,"package")
 10 033a2f4e4fbe2d00068ef81c2979a744</code></pre>
 </div>
 </div>
-<p>That retrieved a lot of movies! Let’s see if we can refine our query. First, movies (as opposed to TV episodes, etc.) have the <code>kind_id</code> value of <code>1</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn =</span> db, <span class="st">"SELECT *</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="st">           FROM title</span></span>
@@ -370,8 +337,6 @@ attr(,"package")
 1 2f0a563d0b0a1f57a19385de5a8770e2</code></pre>
 </div>
 </div>
-<p>Now we have the result that I want.</p>
-<p>Imagine that I didn’t know the full title of the movie I could soften my query by searching for the phrase <code>Groundhog</code> within the title. We can do this using the <code>LIKE</code> function along with some wildcards (<code>%</code> in SQL).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn =</span> db, <span class="st">"SELECT *</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="st">           FROM title</span></span>
@@ -395,7 +360,6 @@ attr(,"package")
 4 c45dd6456b9787e5f71144d6c3a2295e</code></pre>
 </div>
 </div>
-<p>Pretend I’m still not sure which of the above four movies is the real Groundhog Day movie I’m interested in, but I’m sure its the first movie that came out. I could put them in order with the code below.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn =</span> db, <span class="st">"SELECT *</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="st">           FROM title</span></span>
@@ -420,7 +384,6 @@ attr(,"package")
 4 5e7183dbeb6c28fb6445c4013b2bd5d0</code></pre>
 </div>
 </div>
-<p>Finally I can select just the three columns I’m interested in. Also notice that I am renaming the title table as t. So I select the columns t.title and t.production_year. This is called creating an alias. The convention is table.variable. This will be useful when joining tables.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn =</span> db, <span class="st">"SELECT t.id, t.title, t.production_year</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="st">           FROM title AS t</span></span>
@@ -435,11 +398,6 @@ attr(,"package")
 4 3664273       Groundhog            2017</code></pre>
 </div>
 </div>
-<p>Its the first Groundhog day that came out in 1993 with ID 3664274.</p>
-</section>
-<section id="exercise" class="level1">
-<h1>Exercise:</h1>
-<p>Find the original Ghostbusters in the <code>title</code> table.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn =</span> db, <span class="st">"SELECT *</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="st">           FROM title</span></span>
@@ -482,7 +440,6 @@ attr(,"package")
 10 90a52baa0f97758adacbf69ce4c4d34c</code></pre>
 </div>
 </div>
-<p>Now lets consider the name table</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn=</span> db, <span class="st">"DESCRIBE name;"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -498,13 +455,6 @@ attr(,"package")
 9        md5sum varchar(32)  YES MUL    &lt;NA&gt;               </code></pre>
 </div>
 </div>
-</section>
-<section id="exercise-1" class="level1">
-<h1>Exercise:</h1>
-<p>Find <a href="https://www.imdb.com/title/tt0107048/fullcredits?ref_=tt_ov_st_sm">Andie MacDowell</a>’s <code>id</code> in the <code>name</code> table.</p>
-<blockquote class="blockquote">
-<p>Note: that names are listed last name first and seperated by a comma (eg Murray, Bill)</p>
-</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn=</span> db,<span class="st">"SELECT id</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="st">           FROM name</span></span>
@@ -514,10 +464,6 @@ attr(,"package")
 1 3479179</code></pre>
 </div>
 </div>
-<section id="joining-tables" class="level2">
-<h2 class="anchored" data-anchor-id="joining-tables">Joining tables</h2>
-<p>In the IMDB, the <code>title</code> table contains information about movies, the <code>name</code> table contains the names of people, the <code>char_name</code> table contains information about the names of characters, and the <code>cast_info</code> table contains information about which people played which roles in which movies. Linking the tables together is essential in order to extract information from the database.</p>
-<p>Since we already know that the ID of <em>Groundhog Day</em> is <code>3664274</code>, we can use that to find all of the cast assignments.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(<span class="at">conn=</span> db, <span class="st">"SELECT *</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="st">           FROM cast_info</span></span>
@@ -537,10 +483,9 @@ attr(,"package")
 10 5395988    685478  3664274           5433         &lt;NA&gt;        3       1</code></pre>
 </div>
 </div>
+<p>I’ve learned a lot from working with SQL because it’s a language that lets me communicate directly with databases, which opens up a ton of data for analysis. For those working with data, SQL is a vital tool due to its ease of use and strong database searching capabilities. Each search provides information about the underlying data structure and relationships, ranging from straightforward SELECT queries to challenging JOINs and groups. One of my favorite tools in the data analysis toolset is SQL because of its capacity to handle data at scale and extract valuable information. Discovering patterns, trends, and correlations that inform decisions and improve comprehension is just as important as just analyzing data.</p>
 
 
-</section>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

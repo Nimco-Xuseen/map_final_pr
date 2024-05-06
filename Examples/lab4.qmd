@@ -10,9 +10,8 @@ knitr:
 ---
 
 ```{r}
-#| warning: false 
-#| messages: false
-#| document: show
+#| include: TRUE
+#| echo: false
 library(tidyverse)
 
 sqf_url <- "https://www1.nyc.gov/assets/nypd/downloads/zip/analysis_and_planning/stop-question-frisk/sqf-2011-csv.zip"
@@ -27,9 +26,8 @@ rm(sqf_zip)
 ```
 
 ```{r}
-#| warning: false
-#| messages: false
-#| document: show
+#| include: TRUE
+#| echo: false
 sqf_2011 <- 
   sqf_2011 |> 
   select(pct, race, age, frisked, pistol, riflshot, asltweap, knifcuti, machgun, othrweap, sumissue, arstmade) |>
@@ -39,14 +37,11 @@ sqf_2011 <-
 rm(sqf_2011_race_cat)
 ```
 
-###### Question
 
-::: question
-Add two new columns. The first should indicate whether a weapon was found, and the second should indicate whether an arrest/summons was made.
-:::
 
 ```{r}
-
+#| include: TRUE
+#| echo: false
 library(dplyr)
 sqf_2011 <- 
   sqf_2011 |>
@@ -66,27 +61,20 @@ sqf_2011 <-
                                TRUE ~ 0))
 ```
 
-###### Question
 
-::: question
-Subset the dataset to the six variables listed in the data dictionary above.
-:::
 
 ```{r}
-
+#| include: TRUE
+#| echo: false
 sqf_2011_1 <-
   sqf_2011 |>
   select(pct, arrestsumm, age, wpnfound, race_cat, frisked)
 ```
 
-###### Question
-
-::: question
-Calculate the number of stops in 2011. If you are not sure which function to use below, you may want to refer to the list of Summary functions in the the Data Wrangling cheatsheet. Remember that each row in the data frame is a stop.
-:::
 
 ```{r}
-
+#| include: TRUE
+#| echo: false
 total_stops <-
   sqf_2011 |>
   summarize(Count = n()) |>
@@ -95,14 +83,11 @@ total_stops <-
 total_stops
 ```
 
-###### Question
 
-::: question
-How many stops did not result in an arrest or summons in 2011? What percentage of stops did not result in an arrest or summons?
-:::
 
 ```{r}
-
+#| include: TRUE
+#| echo: false
 sqf_2011 |>
   #Subset to rows where suspect innocent
   filter(arrestsumm == 0) |> 
@@ -111,14 +96,11 @@ sqf_2011 |>
             percent_innocent = n() / total_stops * 100)
 ```
 
-###### Question
 
-::: question
-In how many stops were the individuals aged 14-24? In what percentage of stops were the individuals aged 14-24?
-:::
 
 ```{r}
-
+#| include: TRUE
+#| echo: false
 sqf_2011 |>
   #Subset to rows where suspect age 14-24
   filter(age >=14 & age <= 24) |> 
@@ -127,14 +109,10 @@ sqf_2011 |>
             percent_14_24 = n() / total_stops * 100)
 ```
 
-###### Question
-
-::: question
-Fix the code below to calculate the currect number of stops for individuals 14-24.
-:::
 
 ```{r}
-
+#| include: TRUE
+#| echo: false
 total_stops_age_recorded <-
   sqf_2011 |>
   #Subset to rows where age is not 999
@@ -148,16 +126,11 @@ sqf_2011 |>
             percent_14_24 = n() / total_stops_age_recorded * 100)
 ```
 
-This still doesn't match the values we see on the website, but it does match the values we see in the NYCLU's 2011 report on Stop, Question, and Frisk data. This is typically when I would reach out to a representative at the NYCLU to inquire about the discrepancy.
 
-###### Question
-
-::: question
-How many stops were there per race in 2011? What percentage of stops per race in 2011? Arrange by number of stops in descending order.
-:::
 
 ```{r}
-
+#| include: TRUE
+#| echo: false
 total_stops_race_recorded <-
   sqf_2011 |>
   #Subset to rows where race_cat is not NA or "OTHER"
@@ -176,5 +149,8 @@ sqf_2011 |>
   #Sort by stops in descending order
   arrange(desc(stops)) 
 ```
+
+Even though it can be difficult, data wrangling is where the real magic in data analysis happens. It's the skill of converting unstructured, unclean data into an orderly, structured format that can be analyzed. I now have a profound understanding of the significance of data consistency and quality because to my experience with data wrangling. Every stage of the wrangling process—from handling missing values to rearranging information and combining diverse sources—brings me one step closer to useful findings. The thrill of transforming disorganized material into something significant and useful is tremendously satisfying, even though it can occasionally be time-consuming and laborious. Data wrangling is a crucial skill in the resume of a data analyst because it lays the foundation for successful analysis.
+
 
 

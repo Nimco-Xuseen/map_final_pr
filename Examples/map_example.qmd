@@ -25,20 +25,3 @@ library(leaflet)
 USA_map <-  maps::map("state", plot = TRUE, fill = TRUE) |> st_as_sf(coords = c("x", "y"), crs = 4326)
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

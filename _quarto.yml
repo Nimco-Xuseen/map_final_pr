@@ -18,8 +18,8 @@ output:
 format:
   html:
     theme:
-      light: sketchy
-      dark: quartz
+      light: minty
+      dark: sketchy
 
 website:   
   page-navigation: true
@@ -37,14 +37,14 @@ website:
     
     right:
     - text: Map
-      href: Examples/map_example.qmd
-    - icon: github
-      href: https://www.github.com
+      href: Examples/lab7.qmd
     - text: SQL
       href: Examples/lab_8.qmd
     - text: Wrangling
       href: Examples/lab4.qmd
-
+    - icon: github
+      href: https://www.github.com
+ 
   
   # Note if you want to make a footer link to a file you'll need to create that file. 
   
